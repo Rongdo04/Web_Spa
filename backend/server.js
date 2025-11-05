@@ -18,10 +18,11 @@ import config from "./config/index.js";
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
-
 const app = express();
+
+// Connect to MongoDB
+// For Vercel serverless, Mongoose connection pooling handles serverless well
+connectDB();
 const port = config.PORT;
 
 // Middleware
@@ -104,10 +105,12 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(port, () => {
-  console.log(`🚀 Server is running on http://localhost:${port}`);
-  console.log(`📋 API Documentation: http://localhost:${port}/api/health`);
-  console.log(`🔄 Environment: ${process.env.NODE_ENV || "development"}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`🚀 Server is running on http://localhost:${port}`);
+    console.log(`📋 API Documentation: http://localhost:${port}/api/health`);
+    console.log(`🔄 Environment: ${process.env.NODE_ENV || "development"}`);
+  });
+}
 
 export default app;

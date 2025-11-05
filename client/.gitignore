@@ -1,4 +1,13 @@
+# Dependencies
+node_modules/
 # Logs
+# Word docs (và file tạm của Word)
+*.odp
+*.doc
+*.docx
+*.dot
+*.dotx
+~$*.doc*
 logs
 *.log
 npm-debug.log*
