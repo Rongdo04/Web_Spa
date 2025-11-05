@@ -14,6 +14,10 @@ export const getPublicStaff = async (req, res) => {
       filter.role = role;
     }
 
+    // Debug logging
+    console.log("🔍 Staff Query - Filter:", JSON.stringify(filter));
+    console.log("🔍 Staff Query - Limit:", limit);
+
     // Execute query
     const staff = await Staff.find(filter)
       .populate({
@@ -24,6 +28,8 @@ export const getPublicStaff = async (req, res) => {
       .select("name role image skills hireDate")
       .sort({ hireDate: -1 })
       .limit(parseInt(limit));
+
+    console.log(`✅ Staff Query Result: ${staff.length} staff members found`);
 
     // Transform data for public display
     const transformedStaff = staff.map((member) => {

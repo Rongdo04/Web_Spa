@@ -13,11 +13,17 @@ export const getPublicCategories = async (req, res) => {
       filter.level = parseInt(level);
     }
 
+    // Debug logging
+    console.log("🔍 Categories Query - Filter:", JSON.stringify(filter));
+    console.log("🔍 Categories Query - Limit:", limit);
+
     // Execute query
     const limitNum = parseInt(limit);
     const categories = await Category.find(filter)
       .sort({ displayOrder: 1, createdAt: -1 })
       .limit(limitNum);
+
+    console.log(`✅ Categories Query Result: ${categories.length} categories found`);
 
     // Transform data to match frontend expectations
     const transformedCategories = categories.map((category) => ({

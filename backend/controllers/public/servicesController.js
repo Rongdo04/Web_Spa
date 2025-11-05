@@ -7,13 +7,23 @@ export const getFeaturedServices = async (req, res) => {
   try {
     const { limit = 4 } = req.query;
 
-    const services = await Service.find({
+    const filter = {
       isActive: true,
       isFeatured: true,
-    })
+    };
+
+    // Debug logging
+    console.log("🔍 Featured Services Query - Filter:", JSON.stringify(filter));
+    console.log("🔍 Featured Services Query - Limit:", limit);
+
+    const services = await Service.find(filter)
       .populate("category", "name")
       .sort({ displayOrder: 1, createdAt: -1 })
       .limit(parseInt(limit));
+
+    console.log(
+      `✅ Featured Services Query Result: ${services.length} services found`
+    );
 
     // Transform data to match frontend expectations
     const transformedServices = services.map((service) => ({
@@ -88,6 +98,11 @@ export const getPublicServices = async (req, res) => {
         sortObj = { displayOrder: 1, createdAt: -1 };
     }
 
+    // Debug logging
+    console.log("🔍 Services Query - Filter:", JSON.stringify(filter));
+    console.log("🔍 Services Query - Sort:", JSON.stringify(sortObj));
+    console.log("🔍 Services Query - Page:", page, "Limit:", limit);
+
     // Execute query with pagination
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
@@ -100,6 +115,10 @@ export const getPublicServices = async (req, res) => {
       .limit(limitNum);
 
     const totalItems = await Service.countDocuments(filter);
+
+    console.log(
+      `✅ Services Query Result: ${services.length} services found, Total: ${totalItems}`
+    );
 
     // Transform data to match frontend expectations
     const transformedServices = services.map((service) => ({

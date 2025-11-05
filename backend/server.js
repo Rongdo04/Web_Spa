@@ -3,7 +3,11 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import connectDB from "./config/database.js";
+import connectDB, {
+  isConnected,
+  getConnectionState,
+} from "./config/database.js";
+import ensureDbConnection from "./middleware/dbReady.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/admin/index.js";
 import publicContactRoutes from "./routes/public/contact.js";
@@ -58,6 +62,10 @@ app.use((req, res, next) => {
   next();
 });
 
+// Ensure MongoDB connection is ready before processing API requests
+// This is critical for Vercel serverless where connection might not be ready
+app.use("/api", ensureDbConnection);
+
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
@@ -71,11 +79,18 @@ app.use("/api/public/staff", publicStaffRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
+  const dbState = getConnectionState();
+  const dbConnected = isConnected();
+
   res.json({
     status: "OK",
     message: "Authentication API Server is running",
     timestamp: new Date().toISOString(),
-    database: "MongoDB Connected",
+    database: {
+      connected: dbConnected,
+      state: dbState,
+      message: dbConnected ? "MongoDB Connected" : `MongoDB ${dbState}`,
+    },
     version: "1.0.0",
     environment: process.env.NODE_ENV || "development",
   });
