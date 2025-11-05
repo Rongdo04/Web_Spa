@@ -1,0 +1,33 @@
+{
+  "name": "mern-authentication-app",
+  "version": "1.0.0",
+  "description": "MERN Stack Authentication System with Role-based Access",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "client": "cd client && npm run dev",
+    "server": "cd backend && npm run dev",
+    "dev:both": "concurrently \"npm run server\" \"npm run client\"",
+    "install:backend": "cd backend && npm install",
+    "install:client": "cd client && npm install",
+    "install:all": "npm run install:backend && npm run install:client",
+    "build": "cd client && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "nodemon": "^3.1.10"
+  },
+  "keywords": [
+    "mern",
+    "authentication",
+    "mongodb",
+    "express",
+    "react",
+    "nodejs"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@ant-design/icons": "^6.0.2"
+  }
+}
