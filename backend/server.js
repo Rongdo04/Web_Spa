@@ -22,7 +22,23 @@ const app = express();
 
 // Connect to MongoDB
 // For Vercel serverless, Mongoose connection pooling handles serverless well
-connectDB();
+// Use lazy connection to avoid cold start issues
+if (!process.env.VERCEL) {
+  connectDB();
+} else {
+  // Lazy connection for Vercel serverless
+  // Don't block on connection, let it connect in background
+  (async () => {
+    try {
+      await connectDB();
+    } catch (err) {
+      console.error(
+        "Initial DB connection failed, will retry on first request:",
+        err.message
+      );
+    }
+  })();
+}
 const port = config.PORT;
 
 // Middleware

@@ -38,7 +38,11 @@ const connectDB = async () => {
     });
   } catch (error) {
     console.error("❌ MongoDB connection failed:", error.message);
-    process.exit(1);
+    // Don't exit process in serverless environment (Vercel)
+    // Let the connection retry on next request
+    if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      process.exit(1);
+    }
   }
 };
 
